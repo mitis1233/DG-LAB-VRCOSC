@@ -1,6 +1,7 @@
 import sys
 import asyncio
 import os
+os.environ['QT_API'] = 'pyside6'
 from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget
 from PySide6.QtGui import QIcon
 from qasync import QEventLoop
