@@ -20,66 +20,66 @@ class ControllerSettingsTab(QWidget):
         self.layout = QFormLayout(self)
         self.setLayout(self.layout)
 
-        # 控制器参数设置
-        self.controller_group = QGroupBox("DGLabController 设置")
-        self.controller_group.setEnabled(False)  # 默认禁用
+        # 控制器參數設置
+        self.controller_group = QGroupBox("DGLabController 設置")
+        self.controller_group.setEnabled(False)  # 預設禁用
         self.controller_form = QFormLayout()
 
-        # 添加 A 通道滑动条和标签
-        self.a_channel_label = QLabel("A 通道强度: 0 / 100")  # 默认显示
+        # 添加 A 通道滑動條和標籤
+        self.a_channel_label = QLabel("A 通道強度: 0 / 100")  # 默認顯示
         self.a_channel_slider = QSlider(Qt.Horizontal)
-        self.a_channel_slider.setRange(0, 100)  # 默认范围
+        self.a_channel_slider.setRange(0, 100)  # 默認範圍
         self.a_channel_slider.valueChanged.connect(self.set_a_channel_strength)
-        self.a_channel_slider.sliderPressed.connect(self.disable_a_channel_updates)  # 用户开始拖动时禁用外部更新
-        self.a_channel_slider.sliderReleased.connect(self.enable_a_channel_updates)  # 用户释放时重新启用外部更新
-        self.a_channel_slider.valueChanged.connect(lambda: self.show_tooltip(self.a_channel_slider))  # 实时显示提示
+        self.a_channel_slider.sliderPressed.connect(self.disable_a_channel_updates)  # 用戶開始拖動時禁用外部更新
+        self.a_channel_slider.sliderReleased.connect(self.enable_a_channel_updates)  # 用戶釋放時重新啟用外部更新
+        self.a_channel_slider.valueChanged.connect(lambda: self.show_tooltip(self.a_channel_slider))  # 即時顯示提示
         self.controller_form.addRow(self.a_channel_label)
         self.controller_form.addRow(self.a_channel_slider)
 
-        # 添加 B 通道滑动条和标签
-        self.b_channel_label = QLabel("B 通道强度: 0 / 100")  # 默认显示
+        # 添加 B 通道滑動條和標籤
+        self.b_channel_label = QLabel("B 通道強度: 0 / 100")  # 默認顯示
         self.b_channel_slider = QSlider(Qt.Horizontal)
-        self.b_channel_slider.setRange(0, 100)  # 默认范围
+        self.b_channel_slider.setRange(0, 100)  # 默認範圍
         self.b_channel_slider.valueChanged.connect(self.set_b_channel_strength)
-        self.b_channel_slider.sliderPressed.connect(self.disable_b_channel_updates)  # 用户开始拖动时禁用外部更新
-        self.b_channel_slider.sliderReleased.connect(self.enable_b_channel_updates)  # 用户释放时重新启用外部更新
-        self.b_channel_slider.valueChanged.connect(lambda: self.show_tooltip(self.b_channel_slider))  # 实时显示提示
+        self.b_channel_slider.sliderPressed.connect(self.disable_b_channel_updates)  # 用戶開始拖動時禁用外部更新
+        self.b_channel_slider.sliderReleased.connect(self.enable_b_channel_updates)  # 用戶釋放時重新啟用外部更新
+        self.b_channel_slider.valueChanged.connect(lambda: self.show_tooltip(self.b_channel_slider))  # 即時顯示提示
         self.controller_form.addRow(self.b_channel_label)
         self.controller_form.addRow(self.b_channel_slider)
 
-        # 控制滑动条外部更新的状态标志
+        # 控制滑動條外部更新的狀態標誌
         self.allow_a_channel_update = True
         self.allow_b_channel_update = True
 
-        # 是否启用面板控制
-        self.enable_panel_control_checkbox = QCheckBox("允许 avatar 控制设备") # PanelControl 关闭后忽略所有游戏内传入的控制
+        # 是否啟用面板控制
+        self.enable_panel_control_checkbox = QCheckBox("允許 avatar 控制設備") # PanelControl 關閉後忽略所有遊戲內傳入的控制
         self.enable_panel_control_checkbox.setChecked(True)
         self.controller_form.addRow(self.enable_panel_control_checkbox)
 
-        # ChatBox状态开关
-        self.enable_chatbox_status_checkbox = QCheckBox("启用ChatBox状态显示")
+        # ChatBox狀態開關
+        self.enable_chatbox_status_checkbox = QCheckBox("啟用ChatBox狀態顯示")
         self.enable_chatbox_status_checkbox.setChecked(False)
         self.controller_form.addRow(self.enable_chatbox_status_checkbox)
 
-        # 创建水平布局用于放置 dynamic_bone_mode 和 current_select_channel 显示
+        # 創建水平布局用於放置 dynamic_bone_mode 和 current_select_channel 顯示
         dynamic_bone_layout = QHBoxLayout()
 
-        # 动骨模式选择
+        # 動骨模式選擇
         self.dynamic_bone_mode_a_checkbox = QCheckBox("A通道交互模式")
         self.dynamic_bone_mode_b_checkbox = QCheckBox("B通道交互模式")
 
-        # 添加复选框到水平布局
+        # 添加複選框到水平布局
         dynamic_bone_layout.addWidget(self.dynamic_bone_mode_a_checkbox)
         dynamic_bone_layout.addWidget(self.dynamic_bone_mode_b_checkbox)
 
-        # 在同行右侧增加 current_select_channel 显示标签
-        self.current_channel_label = QLabel("面板当前控制通道: 未设置")
+        # 在同行右側增加 current_select_channel 顯示標籤
+        self.current_channel_label = QLabel("面板當前控制通道: 未設置")
         dynamic_bone_layout.addWidget(self.current_channel_label)
 
-        # 将水平布局添加到主布局
+        # 將水平布局添加到主布局
         self.controller_form.addRow(dynamic_bone_layout)
 
-        # 波形模式选择
+        # 波形模式選擇
         self.pulse_mode_a_combobox = QComboBox()
         self.pulse_mode_b_combobox = QComboBox()
         for pulse_name in PULSE_NAME:
@@ -88,11 +88,11 @@ class ControllerSettingsTab(QWidget):
         self.controller_form.addRow("A通道波形模式:", self.pulse_mode_a_combobox)
         self.controller_form.addRow("B通道波形模式:", self.pulse_mode_b_combobox)
 
-        # 强度步长
+        # 強度步長
         self.strength_step_spinbox = QSpinBox()
         self.strength_step_spinbox.setRange(0, 100)
         self.strength_step_spinbox.setValue(30)
-        self.controller_form.addRow("开火强度步长:", self.strength_step_spinbox)
+        self.controller_form.addRow("開火強度步長:", self.strength_step_spinbox)
 
         self.controller_group.setLayout(self.controller_form)
         self.layout.addRow(self.controller_group)
@@ -107,7 +107,7 @@ class ControllerSettingsTab(QWidget):
         self.enable_chatbox_status_checkbox.stateChanged.connect(self.update_chatbox_status)
 
     def bind_controller_settings(self):
-        """将GUI设置与DGLabController变量绑定"""
+        """將GUI設置與DGLabController變數綁定"""
         if self.main_window.controller:
             self.dg_controller = self.main_window.controller
             self.dg_controller.fire_mode_strength_step = self.strength_step_spinbox.value()
@@ -117,7 +117,7 @@ class ControllerSettingsTab(QWidget):
             self.dg_controller.pulse_mode_a = self.pulse_mode_a_combobox.currentIndex()
             self.dg_controller.pulse_mode_b = self.pulse_mode_b_combobox.currentIndex()
             self.dg_controller.enable_chatbox_status = self.enable_chatbox_status_checkbox.isChecked()
-            logger.info("DGLabController 参数已绑定")
+            logger.info("DGLabController 參數已綁定")
         else:
             logger.warning("Controller is not initialized yet.")
 
@@ -165,79 +165,79 @@ class ControllerSettingsTab(QWidget):
             logger.info(f"ChatBox status enabled: {self.dg_controller.enable_chatbox_status}")
 
     def set_a_channel_strength(self, value):
-        """根据滑动条的值设定 A 通道强度"""
+        """根據滑動條的值設定 A 通道強度"""
         if self.main_window.controller:
             asyncio.create_task(self.dg_controller.client.set_strength(Channel.A, StrengthOperationType.SET_TO, value))
             self.dg_controller.last_strength.a = value  # 同步更新 last_strength 的 A 通道值
-            self.a_channel_slider.setToolTip(f"SET A 通道强度: {value}")
+            self.a_channel_slider.setToolTip(f"SET A 通道強度: {value}")
 
     def set_b_channel_strength(self, value):
-        """根据滑动条的值设定 B 通道强度"""
+        """根據滑動條的值設定 B 通道強度"""
         if self.main_window.controller:
             asyncio.create_task(self.dg_controller.client.set_strength(Channel.B, StrengthOperationType.SET_TO, value))
             self.dg_controller.last_strength.b = value  # 同步更新 last_strength 的 B 通道值
-            self.b_channel_slider.setToolTip(f"SET B 通道强度: {value}")
+            self.b_channel_slider.setToolTip(f"SET B 通道強度: {value}")
 
     def disable_a_channel_updates(self):
         """禁用 A 通道的外部更新"""
         self.allow_a_channel_update = False
 
     def enable_a_channel_updates(self):
-        """启用 A 通道的外部更新"""
+        """啟用 A 通道的外部更新"""
         self.allow_a_channel_update = True
-        self.set_a_channel_strength(self.a_channel_slider.value())  # 用户释放时，更新设备
+        self.set_a_channel_strength(self.a_channel_slider.value())  # 用戶釋放時，更新設備
 
     def disable_b_channel_updates(self):
         """禁用 B 通道的外部更新"""
         self.allow_b_channel_update = False
 
     def enable_b_channel_updates(self):
-        """启用 B 通道的外部更新"""
+        """啟用 B 通道的外部更新"""
         self.allow_b_channel_update = True
-        self.set_b_channel_strength(self.b_channel_slider.value())  # 用户释放时，更新设备
+        self.set_b_channel_strength(self.b_channel_slider.value())  # 用戶釋放時，更新設備
 
     def show_tooltip(self, slider):
-        """显示滑动条当前值的工具提示在滑块上方"""
+        """顯示滑動條當前值的工具提示在滑塊上方"""
         value = slider.value()
 
-        # 获取滑块的位置
+        # 獲取滑塊的位置
         slider_min = slider.minimum()
         slider_max = slider.maximum()
         slider_range = slider_max - slider_min
-        slider_length = slider.width()  # 滑条的总长度
+        slider_length = slider.width()  # 滑條的總長度
 
-        # 计算滑块的位置
+        # 計算滑塊的位置
         slider_pos = (value - slider_min) / slider_range * slider_length
 
-        # 滑块的位置转换为全局坐标，并计算显示位置
+        # 滑塊的位置轉換為全局坐標，並計算顯示位置
         global_pos = slider.mapToGlobal(slider.rect().topLeft())
-        tooltip_x = global_pos.x() + slider_pos - 15  # 调整 tooltip 水平位置，使其居中
-        tooltip_y = global_pos.y() - 40  # 调整 tooltip 垂直位置，使其显示在滑块上方
+        tooltip_x = global_pos.x() + slider_pos - 15  # 調整 tooltip 水平位置，使其居中
+        tooltip_y = global_pos.y() - 40  # 調整 tooltip 垂直位置，使其顯示在滑塊上方
 
-        # 显示提示框
+        # 顯示提示框
         QToolTip.showText(QPoint(tooltip_x, tooltip_y), f"{value}", slider)
 
     def update_current_channel_display(self, channel_name):
-        """更新当前选择通道显示"""
-        self.current_channel_label.setText(f"面板当前控制通道: {channel_name}")
+        """更新當前選擇通道顯示"""
+        self.current_channel_label.setText(f"面板當前控制通道: {channel_name}")
 
     def update_channel_strength_labels(self, strength_data):
-        logger.info(f"通道状态已更新 - A通道强度: {strength_data.a}, B通道强度: {strength_data.b}")
+        logger.info(f"通道狀態已更新 - A通道強度: {strength_data.a}, B通道強度: {strength_data.b}")
         if self.main_window.controller and self.main_window.controller.last_strength:
-            # 仅当允许外部更新时更新 A 通道滑动条
+            # 僅當允許外部更新時更新 A 通道滑動條
             if self.allow_a_channel_update:
                 self.a_channel_slider.blockSignals(True)
-                self.a_channel_slider.setRange(0, self.main_window.controller.last_strength.a_limit)  # 根据限制更新范围
+                self.a_channel_slider.setRange(0, self.main_window.controller.last_strength.a_limit)  # 根據限制更新範圍
                 self.a_channel_slider.setValue(self.main_window.controller.last_strength.a)
                 self.a_channel_slider.blockSignals(False)
                 self.a_channel_label.setText(
-                    f"A 通道强度: {self.main_window.controller.last_strength.a} 强度上限: {self.main_window.controller.last_strength.a_limit}  波形: {PULSE_NAME[self.main_window.controller.pulse_mode_a]}")
+                    f"A 通道強度: {self.main_window.controller.last_strength.a} 強度上限: {self.main_window.controller.last_strength.a_limit}  波形: {PULSE_NAME[self.main_window.controller.pulse_mode_a]}")
 
-            # 仅当允许外部更新时更新 B 通道滑动条
+            # 僅當允許外部更新時更新 B 通道滑動條
             if self.allow_b_channel_update:
                 self.b_channel_slider.blockSignals(True)
-                self.b_channel_slider.setRange(0, self.main_window.controller.last_strength.b_limit)  # 根据限制更新范围
+                self.b_channel_slider.setRange(0, self.main_window.controller.last_strength.b_limit)  # 根據限制更新範圍
                 self.b_channel_slider.setValue(self.main_window.controller.last_strength.b)
                 self.b_channel_slider.blockSignals(False)
                 self.b_channel_label.setText(
-                    f"B 通道强度: {self.main_window.controller.last_strength.b} 强度上限: {self.main_window.controller.last_strength.b_limit}  波形: {PULSE_NAME[self.main_window.controller.pulse_mode_b]}")
+                    f"B 通道強度: {self.main_window.controller.last_strength.b} 強度上限: {self.main_window.controller.last_strength.b_limit}  波形: {PULSE_NAME[self.main_window.controller.pulse_mode_b]}")

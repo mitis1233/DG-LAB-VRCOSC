@@ -31,79 +31,79 @@ class TonDamageSystemTab(QWidget):
         self.enable_damage_checkbox.stateChanged.connect(self.toggle_damage_system)
         self.damage_info_layout.addWidget(self.enable_damage_checkbox)
 
-        # 增加用于显示 DisplayName 的标签
-        self.display_name_label = QLabel("User Display Name: 未知")  # 默认显示为 "未知"
+        # 增加用於顯示 DisplayName 的標籤
+        self.display_name_label = QLabel("User Display Name: 未知")  # 默認顯示為 "未知"
         self.damage_info_layout.addWidget(self.display_name_label)
 
         # WebSocket Status Label
         self.websocket_status_label = QLabel("WebSocket Status: Disconnected")
         self.damage_info_layout.addWidget(self.websocket_status_label)
 
-        # 将水平布局添加到主布局中
+        # 將水平布局添加到主布局中
         self.damage_layout.addRow(self.damage_info_layout)
 
         # Damage Progress Bar
         self.damage_progress_bar = QProgressBar()
         self.damage_progress_bar.setRange(0, 100)
         self.damage_progress_bar.setValue(0)  # Initial damage is 0%
-        self.damage_layout.addRow("累计伤害:", self.damage_progress_bar)
+        self.damage_layout.addRow("累計傷害:", self.damage_progress_bar)
 
-        # 统一滑动条的宽度
+        # 統一滑動條的寬度
         slider_max_width = 450
 
-        # 创建横向布局，用于伤害减免滑动条和标签
+        # 創建橫向布局，用於傷害減免滑動條和標籤
         self.damage_reduction_layout = QHBoxLayout()
-        self.damage_reduction_label = QLabel("每秒伤害减免强度: 2 / 10")  # 默认显示
+        self.damage_reduction_label = QLabel("每秒傷害減免強度: 2 / 10")  # 默認顯示
         self.damage_reduction_slider = QSlider(Qt.Horizontal)
         self.damage_reduction_slider.setRange(0, 10)
         self.damage_reduction_slider.setValue(2)  # Default reduction strength per second
-        self.damage_reduction_slider.setMaximumWidth(slider_max_width)  # 设置滑动条的最大宽度
+        self.damage_reduction_slider.setMaximumWidth(slider_max_width)  # 設置滑動條的最大寬度
         self.damage_reduction_slider.valueChanged.connect(
-            lambda value: self.damage_reduction_label.setText(f"每秒伤害减免强度: {value} / 10"))
+            lambda value: self.damage_reduction_label.setText(f"每秒傷害減免強度: {value} / 10"))
         self.damage_reduction_slider.valueChanged.connect(
-            lambda: self.show_tooltip(self.damage_reduction_slider))  # 实时显示提示
+            lambda: self.show_tooltip(self.damage_reduction_slider))  # 即時顯示提示
         self.damage_reduction_layout.addWidget(self.damage_reduction_label)
         self.damage_reduction_layout.addWidget(self.damage_reduction_slider)
-        self.damage_reduction_layout.setAlignment(Qt.AlignRight)  # 使整个布局靠右对齐
+        self.damage_reduction_layout.setAlignment(Qt.AlignRight)  # 使整個布局靠右對齊
         self.damage_layout.addRow(self.damage_reduction_layout)
 
-        # 创建横向布局，用于伤害强度滑动条和标签
+        # 創建橫向布局，用於傷害強度滑動條和標籤
         self.damage_strength_layout = QHBoxLayout()
-        self.damage_strength_label = QLabel("伤害对应强度上限: 50 / 200")  # 默认显示
+        self.damage_strength_label = QLabel("傷害對應強度上限: 50 / 200")  # 默認顯示
         self.damage_strength_slider = QSlider(Qt.Horizontal)
         self.damage_strength_slider.setRange(0, 200)
         self.damage_strength_slider.setValue(60)  # Default strength multiplier
-        self.damage_strength_slider.setMaximumWidth(slider_max_width)  # 设置滑动条的最大宽度
+        self.damage_strength_slider.setMaximumWidth(slider_max_width)  # 設置滑動條的最大寬度
         self.damage_strength_slider.valueChanged.connect(
-            lambda value: self.damage_strength_label.setText(f"伤害对应强度上限: {value} / 200"))
+            lambda value: self.damage_strength_label.setText(f"傷害對應強度上限: {value} / 200"))
         self.damage_strength_slider.valueChanged.connect(
-            lambda: self.show_tooltip(self.damage_strength_slider))  # 实时显示提示
+            lambda: self.show_tooltip(self.damage_strength_slider))  # 即時顯示提示
         self.damage_strength_layout.addWidget(self.damage_strength_label)
         self.damage_strength_layout.addWidget(self.damage_strength_slider)
-        self.damage_strength_layout.setAlignment(Qt.AlignRight)  # 使整个布局靠右对齐
+        self.damage_strength_layout.setAlignment(Qt.AlignRight)  # 使整個布局靠右對齊
         self.damage_layout.addRow(self.damage_strength_layout)
 
-        # 创建横向布局，用于死亡惩罚强度滑动条和标签
+        # 創建橫向布局，用於死亡懲罰強度滑動條和標籤
         self.death_penalty_strength_layout = QHBoxLayout()
-        self.death_penalty_strength_label = QLabel("死亡惩罚强度: 30 / 100")  # 默认显示
+        self.death_penalty_strength_label = QLabel("死亡懲罰強度: 30 / 100")  # 默認顯示
         self.death_penalty_strength_slider = QSlider(Qt.Horizontal)
         self.death_penalty_strength_slider.setRange(0, 100)
         self.death_penalty_strength_slider.setValue(30)  # Default death penalty strength is 100%
-        self.death_penalty_strength_slider.setMaximumWidth(slider_max_width)  # 设置滑动条的最大宽度
+        self.death_penalty_strength_slider.setMaximumWidth(slider_max_width)  # 設置滑動條的最大寬度
         self.death_penalty_strength_slider.valueChanged.connect(
-            lambda value: self.death_penalty_strength_label.setText(f"死亡惩罚强度: {value} / 100"))
+            lambda value: self.death_penalty_strength_label.setText(f"死亡懲罰強度: {value} / 100"))
         self.death_penalty_strength_slider.valueChanged.connect(
-            lambda: self.show_tooltip(self.death_penalty_strength_slider))  # 实时显示提示
+            lambda: self.show_tooltip(self.death_penalty_strength_slider))  # 即時顯示提示
         self.death_penalty_strength_layout.addWidget(self.death_penalty_strength_label)
         self.death_penalty_strength_layout.addWidget(self.death_penalty_strength_slider)
-        self.death_penalty_strength_layout.setAlignment(Qt.AlignRight)  # 使整个布局靠右对齐
+        self.death_penalty_strength_layout.setAlignment(Qt.AlignRight)  # 使整個布局靠右對齊
         self.damage_layout.addRow(self.death_penalty_strength_layout)
 
-        # 死亡惩罚持续时间
+        # 死亡懲罰持續時間
         self.death_penalty_time_spinbox = QSpinBox()
         self.death_penalty_time_spinbox.setRange(0, 60)
         self.death_penalty_time_spinbox.setValue(5)  # Default penalty time is 10 seconds
-        self.damage_layout.addRow("死亡惩罚持续时间 (s):", self.death_penalty_time_spinbox)
+        self.damage_layout.addRow("死亡懲罰持續時間 (s):", self.death_penalty_time_spinbox)
 
         self.damage_group.setLayout(self.damage_layout)
         self.layout.addRow(self.damage_group)
@@ -116,24 +116,24 @@ class TonDamageSystemTab(QWidget):
         self.websocket_client = None
 
     def show_tooltip(self, slider):
-        """显示滑动条当前值的工具提示在滑块上方"""
+        """顯示滑動條當前值的工具提示在滑塊上方"""
         value = slider.value()
 
-        # 获取滑块的位置
+        # 獲取滑塊的位置
         slider_min = slider.minimum()
         slider_max = slider.maximum()
         slider_range = slider_max - slider_min
-        slider_length = slider.width()  # 滑条的总长度
+        slider_length = slider.width()  # 滑條的總長度
 
-        # 计算滑块的位置
+        # 計算滑塊的位置
         slider_pos = (value - slider_min) / slider_range * slider_length
 
-        # 滑块的位置转换为全局坐标，并计算显示位置
+        # 滑塊的位置轉換為全局坐標，並計算顯示位置
         global_pos = slider.mapToGlobal(slider.rect().topLeft())
-        tooltip_x = global_pos.x() + slider_pos - 15  # 调整 tooltip 水平位置，使其居中
-        tooltip_y = global_pos.y() - 40  # 调整 tooltip 垂直位置，使其显示在滑块上方
+        tooltip_x = global_pos.x() + slider_pos - 15  # 調整 tooltip 水平位置，使其居中
+        tooltip_y = global_pos.y() - 40  # 調整 tooltip 垂直位置，使其顯示在滑塊上方
 
-        # 显示提示框
+        # 顯示提示框
         QToolTip.showText(QPoint(tooltip_x, tooltip_y), f"{value}", slider)
 
     def toggle_damage_system(self, enabled):
@@ -157,7 +157,7 @@ class TonDamageSystemTab(QWidget):
                 self.websocket_client = None
             self.damage_timer.stop()
             self.reset_damage()
-            self.websocket_status_label.setText("WebSocket Status: 未连接")
+            self.websocket_status_label.setText("WebSocket Status: 未連接")
             self.websocket_status_label.setStyleSheet("color: red;")
 
     def reduce_damage(self):
@@ -176,7 +176,7 @@ class TonDamageSystemTab(QWidget):
         """Handle incoming WebSocket messages and update status or damage accordingly."""
         logger.info(f"Received WebSocket message: {message}")
 
-        # 如果消息是字符串类型，尝试解析为 JSON
+        # 如果消息是字串類型，嘗試解析為 JSON
         if isinstance(message, str):
             try:
                 message = json.loads(message)
@@ -184,18 +184,18 @@ class TonDamageSystemTab(QWidget):
                 logger.error("Received message is not valid JSON format.")
                 return
 
-        # 处理不同类型的消息
+        # 處理不同類型的消息
         if message.get("Type") == "DAMAGED":
-            damage_value = message.get("Value", 0)  # 确保获取大小写正确的 "Value"
+            damage_value = message.get("Value", 0)  # 確保獲取大小寫正確的 "Value"
             self.accumulate_damage(damage_value)
         elif message.get("Type") == "SAVED":
             self.reset_damage()
-            logger.info("存档更新，重置强度")
+            logger.info("存檔更新，重設強度")
         elif message.get("Type") == "ALIVE":
             is_alive = message.get("Value", 0)
             if not is_alive:
                 asyncio.create_task(self.trigger_death_penalty())
-                logger.info("已死亡，触发死亡惩罚")
+                logger.info("已死亡，觸發死亡懲罰")
         elif message.get("Type") == "STATS":
             if message.get("DisplayName"):
                 user_display_name = message.get("DisplayName")
@@ -210,20 +210,20 @@ class TonDamageSystemTab(QWidget):
         logger.info(f"WebSocket status updated: {status}")
         # Log the exact value of the status for better debugging
         if status.lower() == "connected":
-            self.websocket_status_label.setText("WebSocket Status: 已连接")
+            self.websocket_status_label.setText("WebSocket Status: 已連接")
             self.websocket_status_label.setStyleSheet("color: green;")
         elif status.lower() == "disconnected":
-            self.websocket_status_label.setText("WebSocket Status: 未连接")
+            self.websocket_status_label.setText("WebSocket Status: 未連接")
             self.websocket_status_label.setStyleSheet("color: red;")
         else:
             logger.warning(f"Unexpected WebSocket status: {status}")
-            self.websocket_status_label.setText(f"WebSocket Status: 错误 - {status}")
+            self.websocket_status_label.setText(f"WebSocket Status: 錯誤 - {status}")
             self.websocket_status_label.setStyleSheet("color: orange;")
 
     def handle_websocket_error(self, error_message):
         """Handle WebSocket errors by displaying an error message."""
         logger.error(f"WebSocket error: {error_message}")
-        self.websocket_status_label.setText(f"WebSocket Status: 错误 - {error_message}")
+        self.websocket_status_label.setText(f"WebSocket Status: 錯誤 - {error_message}")
         self.websocket_status_label.setStyleSheet("color: orange;")
 
     def accumulate_damage(self, value):
@@ -239,20 +239,20 @@ class TonDamageSystemTab(QWidget):
         self.damage_progress_bar.setValue(0)
         if self.main_window.app_status_online and self.main_window.controller:
             asyncio.create_task(self.main_window.controller.client.set_strength(Channel.A, StrengthOperationType.SET_TO, 0))
-            asyncio.create_task(self.main_window.controller.strength_fire_mode(False, Channel.A, self.death_penalty_strength_slider.value(), self.main_window.controller.last_strength)) #可能遗漏
+            asyncio.create_task(self.main_window.controller.strength_fire_mode(False, Channel.A, self.death_penalty_strength_slider.value(), self.main_window.controller.last_strength)) #可能遺漏
 
     async def trigger_death_penalty(self):
         """Trigger death penalty by setting damage to 100% and applying penalty."""
-        penalty_strength = self.death_penalty_strength_slider.value()  # 获取惩罚强度
-        penalty_time = self.death_penalty_time_spinbox.value()  # 获取惩罚持续时间
+        penalty_strength = self.death_penalty_strength_slider.value()  # 獲取懲罰強度
+        penalty_time = self.death_penalty_time_spinbox.value()  # 獲取懲罰持續時間
         logger.warning(f"Death penalty triggered: Strength={penalty_strength}, Time={penalty_time}s")
-        self.damage_progress_bar.setValue(100)  # 将伤害设置为 100%
+        self.damage_progress_bar.setValue(100)  # 將傷害設置為 100%
         if self.main_window.controller:
             last_strength_mod = self.main_window.controller.last_strength
-            last_strength_mod.a = self.damage_strength_slider.value() # 开火值基于伤害强度上限更新
+            last_strength_mod.a = self.damage_strength_slider.value() # 開火值基於傷害強度上限更新
             logger.warning(f"Death penalty triggered: a {last_strength_mod.a} fire {penalty_strength}")
-            # 开始惩罚
+            # 開始懲罰
             if self.main_window.app_status_online:
                 asyncio.create_task(self.main_window.controller.strength_fire_mode(True, Channel.A, penalty_strength, last_strength_mod))
-                await asyncio.sleep(penalty_time)  # 等待指定的惩罚持续时间
+                await asyncio.sleep(penalty_time)  # 等待指定的懲罰持續時間
                 asyncio.create_task(self.main_window.controller.strength_fire_mode(False, Channel.A, penalty_strength, last_strength_mod))

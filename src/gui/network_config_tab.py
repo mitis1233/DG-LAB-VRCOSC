@@ -27,60 +27,53 @@ class NetworkConfigTab(QWidget):
         self.layout = QHBoxLayout(self)
         self.setLayout(self.layout)
 
-        # 创建网络配置组
-        self.network_config_group = QGroupBox("网络配置")
+        # 創建網路配置組
+        self.network_config_group = QGroupBox("網路配置")
         self.form_layout = QFormLayout()
 
-        # 网卡选择
+        # 網卡選擇
         self.ip_combobox = QComboBox()
         active_ips = get_active_ip_addresses()
         for interface, ip in active_ips.items():
             self.ip_combobox.addItem(f"{interface}: {ip}")
-        self.form_layout.addRow("选择网卡:", self.ip_combobox)
+        self.form_layout.addRow("選擇網卡:", self.ip_combobox)
 
-        # 端口选择
+        # 埠選擇
         self.port_spinbox = QSpinBox()
         self.port_spinbox.setRange(1024, 65535)
         self.port_spinbox.setValue(self.main_window.settings['port'])  # Set the default or loaded value
-        self.form_layout.addRow("WS连接端口:", self.port_spinbox)
+        self.form_layout.addRow("WS連接埠:", self.port_spinbox)
 
-        # OSC端口选择
+        # OSC埠選擇
         self.osc_port_spinbox = QSpinBox()
         self.osc_port_spinbox.setRange(1024, 65535)
         self.osc_port_spinbox.setValue(self.main_window.settings['osc_port'])  # Set the default or loaded value
-        self.form_layout.addRow("OSC接收端口:", self.osc_port_spinbox)
+        self.form_layout.addRow("OSC接收埠:", self.osc_port_spinbox)
 
-        # 创建 dispatcher 和地址处理器字典
+        # 創建 dispatcher 和地址處理器字典
         self.dispatcher = dispatcher.Dispatcher()
-        self.osc_address_handlers = {}  # 自定义 OSC 地址的处理器
-        self.panel_control_handlers = {}  # 面板控制 OSC 地址的处理器
+        self.osc_address_handlers = {}  # 自訂 OSC 地址的處理器
+        self.panel_control_handlers = {}  # 面板控制 OSC 地址的處理器
 
-        # 添加客户端连接状态标签
-        self.connection_status_label = QLabel("未连接, 请在点击启动后扫描二维码连接")
-        self.connection_status_label.setAlignment(Qt.AlignCenter)  # 设置内容居中
-        self.connection_status_label.setStyleSheet("""
-            QLabel {
-                background-color: red;
-                color: white;
-                border-radius: 5px;  # 圆角
-                padding: 5px;
-            }
-        """)
-        self.connection_status_label.adjustSize()  # 调整大小以适应内容
-        self.form_layout.addRow("客户端连接状态:", self.connection_status_label)
+        # 添加用戶端連接狀態標籤
+        self.connection_status_label = QLabel("未連接, 請在點擊啟動後掃描二維碼連接")
+        self.connection_status_label.setAlignment(Qt.AlignCenter)  # 設置內容居中
+        self.connection_status_label.setStyleSheet("QLabel {background-color: red; color: white; border-radius: 5px; padding: 5px;}")
+        self.connection_status_label.adjustSize()  # 調整大小以適應內容
+        self.form_layout.addRow("用戶端連接狀態:", self.connection_status_label)
 
-        # 启动按钮
-        self.start_button = QPushButton("启动")
-        self.start_button.setStyleSheet("background-color: green; color: white;")  # 设置按钮初始为绿色
+        # 啟動按鈕
+        self.start_button = QPushButton("啟動")
+        self.start_button.setStyleSheet("background-color: green; color: white;")  # 設置按鈕初始為綠色
         self.start_button.clicked.connect(self.start_server_button_clicked)
         self.form_layout.addRow(self.start_button)
 
         self.network_config_group.setLayout(self.form_layout)
 
-        # 将网络配置组添加到布局
+        # 將網路配置組添加到布局
         self.layout.addWidget(self.network_config_group)
 
-        # 二维码显示
+        # 二維碼顯示
         self.qrcode_label = QLabel(self)
         self.layout.addWidget(self.qrcode_label)
 
@@ -120,52 +113,52 @@ class NetworkConfigTab(QWidget):
             logger.info("Network settings saved.")
 
     def start_server_button_clicked(self):
-        """启动按钮被点击后的处理逻辑"""
-        self.start_button.setText("已启动")  # 修改按钮文本
-        self.start_button.setStyleSheet("background-color: grey; color: white;")  # 将按钮置灰
-        self.start_button.setEnabled(False)  # 禁用按钮
-        self.start_server()  # 调用现有的启动服务器逻辑
+        """啟動按鈕被點擊後的處理邏輯"""
+        self.start_button.setText("已啟動")  # 修改按鈕文本
+        self.start_button.setStyleSheet("background-color: grey; color: white;")  # 將按鈕置灰
+        self.start_button.setEnabled(False)  # 禁用按鈕
+        self.start_server()  # 調用現有的啟動伺服器邏輯
 
     def start_server(self):
-        """启动 WebSocket 服务器"""
+        """啟動 WebSocket 伺服器"""
         selected_ip = self.ip_combobox.currentText().split(": ")[-1]
         selected_port = self.port_spinbox.value()
         osc_port = self.osc_port_spinbox.value()
         logger.info(
-            f"正在启动 WebSocket 服务器，监听地址: {selected_ip}:{selected_port} 和 OSC 数据接收端口: {osc_port}")
+            f"正在啟動 WebSocket 伺服器，監聽地址: {selected_ip}:{selected_port} 和 OSC 數據接收埠: {osc_port}")
         try:
             loop = asyncio.get_running_loop()
             loop.create_task(self.run_server(selected_ip, selected_port, osc_port))
-            logger.info('WebSocket 服务器已启动')
+            logger.info('WebSocket 伺服器已啟動')
             # After starting the server, connect the addresses_updated signal
             self.main_window.osc_parameters_tab.addresses_updated.connect(self.update_osc_mappings)
-            # 启动成功后，将按钮设为灰色并禁用
-            self.start_button.setText("已启动")
+            # 啟動成功後，將按鈕設為灰色並禁用
+            self.start_button.setText("已啟動")
             self.start_button.setStyleSheet("background-color: grey; color: white;")
             self.start_button.setEnabled(False)
         except OSError as e:
-            error_message = f"启动服务器失败: {str(e)}"
+            error_message = f"啟動伺服器失敗: {str(e)}"
             # Log the error with error level
             logger.error(error_message)
             # Update the UI to reflect the error
-            self.start_button.setText("启动失败,请重试")
+            self.start_button.setText("啟動失敗,請重試")
             self.start_button.setStyleSheet("background-color: red; color: white;")
             self.start_button.setEnabled(True)
-            # 记录异常日志
-            logger.error(f"服务器启动过程中发生异常: {str(e)}")
+            # 記錄異常日誌
+            logger.error(f"伺服器啟動過程中發生異常: {str(e)}")
 
     async def run_server(self, ip: str, port: int, osc_port: int):
-        """运行服务器并启动OSC服务器"""
+        """運行伺服器並啟動OSC伺服器"""
         try:
             async with DGLabWSServer(ip, port, 60) as server:
                 client = server.new_local_client()
-                logger.info("WebSocket 客户端已初始化")
+                logger.info("WebSocket 用戶端已初始化")
 
                 # Generate QR code
                 url = client.get_qrcode(f"ws://{ip}:{port}")
                 qrcode_image = self.generate_qrcode(url)
                 self.update_qrcode(qrcode_image)
-                logger.info(f"二维码已生成，WebSocket URL: ws://{ip}:{port}")
+                logger.info(f"二維碼已生成，WebSocket URL: ws://{ip}:{port}")
 
                 osc_client = udp_client.SimpleUDPClient("127.0.0.1", 9000)
                 # Initialize controller
@@ -175,51 +168,51 @@ class NetworkConfigTab(QWidget):
                 # After controller initialization, bind settings
                 self.main_window.controller_settings_tab.bind_controller_settings()
 
-                # 设置 OSC 服务器
+                # 設置 OSC 伺服器
                 osc_server_instance = osc_server.AsyncIOOSCUDPServer(
                     ("0.0.0.0", osc_port), self.dispatcher, asyncio.get_event_loop()
                 )
                 osc_transport, osc_protocol = await osc_server_instance.create_serve_endpoint()
                 logger.info(f"OSC Server Listening on port {osc_port}")
 
-                # 连接 addresses_updated 信号到 update_osc_mappings 方法
+                # 連接 addresses_updated 信號到 update_osc_mappings 方法
                 self.main_window.osc_parameters_tab.addresses_updated.connect(self.update_osc_mappings)
-                # 初始化 OSC 映射，包括面板控制和自定义地址
+                # 初始化 OSC 映射，包括面板控制和自訂地址
                 self.update_osc_mappings(controller)
 
                 # Start the data processing loop
                 async for data in client.data_generator():
                     if isinstance(data, StrengthData):
-                        logger.info(f"接收到数据包 - A通道: {data.a}, B通道: {data.b}")
+                        logger.info(f"接收到封包 - A通道: {data.a}, B通道: {data.b}")
                         controller.last_strength = data
-                        controller.data_updated_event.set()  # 数据更新，触发开火操作的后续事件
+                        controller.data_updated_event.set()  # 數據更新，觸發開火操作的後續事件
                         controller.app_status_online = True
                         self.main_window.app_status_online = True
                         self.update_connection_status(controller.app_status_online)
                         # Update UI components related to strength data
                         self.main_window.controller_settings_tab.update_channel_strength_labels(data)
                     elif isinstance(data, FeedbackButton):
-                        logger.info(f"App 触发了反馈按钮：{data.name}")
+                        logger.info(f"App 觸發了回饋按鈕：{data.name}")
                     elif data == RetCode.CLIENT_DISCONNECTED:
-                        logger.info("App 已断开连接，你可以尝试重新扫码进行连接绑定")
+                        logger.info("App 已斷開連接，你可以嘗試重新掃碼進行連接綁定")
                         controller.app_status_online = False
                         self.main_window.app_status_online = False
                         self.update_connection_status(controller.app_status_online)
                         await client.rebind()
-                        logger.info("重新绑定成功")
+                        logger.info("重新綁定成功")
                         controller.app_status_online = True
                         self.update_connection_status(controller.app_status_online)
                     else:
-                        logger.info(f"获取到状态码：{RetCode}")
+                        logger.info(f"獲取到狀態碼：{RetCode}")
 
                 osc_transport.close()
         except OSError as e:
             # Handle specific errors and log them
-            error_message = f"WebSocket 服务器启动失败: {str(e)}"
+            error_message = f"WebSocket 伺服器啟動失敗: {str(e)}"
             logger.error(error_message)
 
-            # 启动过程中发生异常，恢复按钮状态为可点击的红色
-            self.start_button.setText("启动失败，请重试")
+            # 啟動過程中發生異常，恢復按鈕狀態為可點擊的紅色
+            self.start_button.setText("啟動失敗，請重試")
             self.start_button.setStyleSheet("background-color: red; color: white;")
             self.start_button.setEnabled(True)
             self.main_window.log_viewer_tab.log_text_edit.append(f"ERROR: {error_message}")
@@ -231,7 +224,7 @@ class NetworkConfigTab(QWidget):
         asyncio.create_task(self.main_window.controller.handle_osc_message_pb(address, *args))
 
     def generate_qrcode(self, data: str):
-        """生成二维码并转换为PySide6可显示的QPixmap"""
+        """生成二維碼並轉換為PySide6可顯示的QPixmap"""
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=6, border=2)
         qr.add_data(data)
         qr.make(fit=True)
@@ -247,41 +240,27 @@ class NetworkConfigTab(QWidget):
         return qimage
 
     def update_qrcode(self, qrcode_pixmap):
-        """更新二维码并调整QLabel的大小"""
+        """更新二維碼並調整QLabel的大小"""
         self.qrcode_label.setPixmap(qrcode_pixmap)
-        self.qrcode_label.setFixedSize(qrcode_pixmap.size())  # 根据二维码尺寸调整QLabel大小
-        logger.info("二维码已更新")
+        self.qrcode_label.setFixedSize(qrcode_pixmap.size())  # 根據二維碼尺寸調整QLabel大小
+        logger.info("二維碼已更新")
 
     def update_connection_status(self, is_online):
         self.main_window.app_status_online = is_online
-        """根据设备连接状态更新标签的文本和颜色"""
+        """根據設備連接狀態更新標籤的文本和顏色"""
         if is_online:
-            self.connection_status_label.setText("已连接")
-            self.connection_status_label.setStyleSheet("""
-                QLabel {
-                    background-color: green;
-                    color: white;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-            """)
-            # 启用 DGLabController 设置
-            self.main_window.controller_settings_tab.controller_group.setEnabled(True)  # 启用控制器设置
+            self.connection_status_label.setText("已連接")
+            self.connection_status_label.setStyleSheet("QLabel {background-color: green; color: white; border-radius: 5px; padding: 5px;}")
+            # 啟用 DGLabController 設置
+            self.main_window.controller_settings_tab.controller_group.setEnabled(True)  # 啟用控制器設置
             self.main_window.ton_damage_system_tab.damage_group.setEnabled(True)
         else:
-            self.connection_status_label.setText("未连接")
-            self.connection_status_label.setStyleSheet("""
-                QLabel {
-                    background-color: red;
-                    color: white;
-                    border-radius: 5px;
-                    padding: 5px;
-                }
-            """)
-            # 禁用 DGLabController 设置
-            self.main_window.controller_settings_tab.controller_group.setEnabled(False)  # 禁用控制器设置
+            self.connection_status_label.setText("未連接")
+            self.connection_status_label.setStyleSheet("QLabel {background-color: red; color: white; border-radius: 5px; padding: 5px;}")
+            # 禁用 DGLabController 設置
+            self.main_window.controller_settings_tab.controller_group.setEnabled(False)  # 禁用控制器設置
             self.main_window.ton_damage_system_tab.damage_group.setEnabled(False)
-        self.connection_status_label.adjustSize()  # 根据内容调整标签大小
+        self.connection_status_label.adjustSize()  # 根據內容調整標籤大小
 
     def update_osc_mappings(self, controller=None):
         if controller is None:
@@ -289,12 +268,12 @@ class NetworkConfigTab(QWidget):
         asyncio.run_coroutine_threadsafe(self._update_osc_mappings(controller), asyncio.get_event_loop())
 
     async def _update_osc_mappings(self, controller):
-        # 首先，移除之前的自定义 OSC 地址映射
+        # 首先，移除之前的自訂 OSC 地址映射
         for address, handler in self.osc_address_handlers.items():
             self.dispatcher.unmap(address, handler)
         self.osc_address_handlers.clear()
 
-        # 添加新的自定义 OSC 地址映射
+        # 添加新的自訂 OSC 地址映射
         osc_addresses = self.main_window.get_osc_addresses()
         for addr in osc_addresses:
             address = addr['address']
@@ -304,7 +283,7 @@ class NetworkConfigTab(QWidget):
             self.osc_address_handlers[address] = handler
         logger.info("OSC dispatcher mappings updated with custom addresses.")
 
-        # 确保面板控制的 OSC 地址映射被添加（如果尚未添加）
+        # 確保面板控制的 OSC 地址映射被添加（如果尚未添加）
         if not self.panel_control_handlers:
             self.add_panel_control_mappings(controller)
 

@@ -19,13 +19,13 @@ class QTextEditHandler(logging.Handler):
         elif record.levelno == logging.WARNING:
             msg = f"<b style='color:orange;'>{msg}</b>"  # Display warnings in orange
         else:
-            msg = f"<span>{msg}</span>"  # 默认使用普通字体
+            msg = f"<span>{msg}</span>"  # 預設使用普通字體
         # Append the message to the text edit and reset the cursor position
         self.text_edit.append(msg)
         self.text_edit.ensureCursorVisible()  # Ensure the latest log is visible
 
 class SimpleFormatter(logging.Formatter):
-    """自定义格式化器，将日志级别缩写并调整时间格式"""
+    """自訂格式化器，將日誌級別縮寫並調整時間格式"""
 
     def format(self, record):
         level_short = {
@@ -34,7 +34,7 @@ class SimpleFormatter(logging.Formatter):
             'WARNING': 'W',
             'ERROR': 'E',
             'CRITICAL': 'C'
-        }.get(record.levelname, 'I')  # 默认 INFO
+        }.get(record.levelname, 'I')  # 默認 INFO
         record.levelname = level_short
         return super().format(record)
 
@@ -47,89 +47,89 @@ class LogViewerTab(QWidget):
         self.layout = QFormLayout(self)
         self.setLayout(self.layout)
 
-        # 日志显示框 - 使用 QGroupBox 包装
-        self.log_groupbox = QGroupBox("简约日志")
+        # 日誌顯示框 - 使用 QGroupBox 包裝
+        self.log_groupbox = QGroupBox("簡約日誌")
         self.log_groupbox.setCheckable(True)
         self.log_groupbox.setChecked(True)
         self.log_groupbox.toggled.connect(self.toggle_log_display)
 
-        # 日志显示框
+        # 日誌顯示框
         self.log_text_edit = QTextEdit(self)
         self.log_text_edit.setReadOnly(True)
 
-        # 将日志显示框添加到 GroupBox 的布局中
+        # 將日誌顯示框添加到 GroupBox 的布局中
         log_layout = QVBoxLayout()
         log_layout.addWidget(self.log_text_edit)
         self.log_groupbox.setLayout(log_layout)
 
-        # 将 GroupBox 添加到主布局
+        # 將 GroupBox 添加到主布局
         self.layout.addWidget(self.log_groupbox)
 
-        # 设置日志处理器
+        # 設置日誌處理器
         self.log_handler = QTextEditHandler(self.log_text_edit)
-        self.log_handler.setLevel(logging.DEBUG)  # 捕获所有日志级别
+        self.log_handler.setLevel(logging.DEBUG)  # 捕獲所有日誌級別
 
-        # 使用自定义格式化器，简化时间和日志级别
+        # 使用自訂格式化器，簡化時間和日誌級別
         formatter = SimpleFormatter('%(asctime)s-%(levelname)s: %(message)s', datefmt='%H:%M:%S')
         self.log_handler.setFormatter(formatter)
 
-        # 增加可折叠的调试界面
-        self.debug_group = QGroupBox("调试信息")
+        # 增加可摺疊的除錯界面
+        self.debug_group = QGroupBox("除錯資訊")
         self.debug_group.setCheckable(True)
-        self.debug_group.setChecked(False)  # 默认折叠状态
-        self.debug_group.toggled.connect(self.toggle_debug_info)  # 连接信号槽
+        self.debug_group.setChecked(False)  # 默認摺疊狀態
+        self.debug_group.toggled.connect(self.toggle_debug_info)  # 連接信號槽
 
         self.debug_layout = QHBoxLayout()
-        self.debug_label = QLabel("DGLabController 参数:")
+        self.debug_label = QLabel("DGLabController 參數:")
         self.debug_layout.addWidget(self.debug_label)
 
-        # 显示控制器的参数
-        self.param_label = QLabel("正在加载控制器参数...")
+        # 顯示控制器的參數
+        self.param_label = QLabel("正在載入控制器參數...")
         self.debug_layout.addWidget(self.param_label)
 
         self.debug_group.setLayout(self.debug_layout)
         self.layout.addRow(self.debug_group)
 
-        # 启动定时器，每秒刷新一次调试信息
+        # 啟動定時器，每秒刷新一次除錯資訊
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_debug_info)
         self.timer.start(1000)  # 每秒刷新一次
 
     def toggle_log_display(self, enabled):
-        """折叠或展开日志显示框"""
+        """摺疊或展開日誌顯示框"""
         if enabled:
-            self.log_text_edit.show()  # 展开时显示日志框
+            self.log_text_edit.show()  # 展開時顯示日誌框
         else:
-            self.log_text_edit.hide()  # 折叠时隐藏日志框
+            self.log_text_edit.hide()  # 摺疊時隱藏日誌框
 
     def limit_log_lines(self, max_lines=500):
-        """限制 QTextEdit 中的最大行数，保留颜色和格式，并保持显示最新日志"""
+        """限制 QTextEdit 中的最大行數，保留顏色和格式，並保持顯示最新日誌"""
         document = self.log_text_edit.document()
         block_count = document.blockCount()
         cursor = self.log_text_edit.textCursor()
-        # 如果当前行数超过最大行数
+        # 如果當前行數超過最大行數
         if block_count > max_lines:
-            cursor.movePosition(QTextCursor.Start)  # 移动到文本开头
+            cursor.movePosition(QTextCursor.Start)  # 移動到文本開頭
 
-            # 选择并删除前面的行，直到行数符合要求
+            # 選擇並刪除前面的行，直到行數符合要求
             for _ in range(block_count - max_lines):
                 cursor.select(QTextCursor.BlockUnderCursor)
                 cursor.removeSelectedText()
-                cursor.deleteChar()  # 删除行后保留格式
-        # 无论是否删除行，都移动光标到文本末尾
+                cursor.deleteChar()  # 刪除行後保留格式
+        # 無論是否刪除行，都移動游標到文本末尾
         cursor.movePosition(QTextCursor.End)
         self.log_text_edit.setTextCursor(cursor)
-        # 确保最新日志可见
+        # 確保最新日誌可見
         self.log_text_edit.ensureCursorVisible()
 
     def toggle_debug_info(self, checked):
-        """当调试组被启用/禁用时折叠或展开内容"""
-        # 控制调试信息组中所有子组件的可见性，而不是整个调试组
+        """當除錯組被啟用/禁用時摺疊或展開內容"""
+        # 控制除錯資訊組中所有子組件的可見性，而不是整個除錯組
         for child in self.debug_group.findChildren(QWidget):
             child.setVisible(checked)
 
     def update_debug_info(self):
-        """更新调试信息"""
+        """更新除錯資訊"""
         if self.main_window.controller is not None:
             self.dg_controller = self.main_window.controller
             params = (
