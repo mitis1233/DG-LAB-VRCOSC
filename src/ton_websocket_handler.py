@@ -32,7 +32,7 @@ class WebSocketClient(QObject):
         """Process the received WebSocket message and parse JSON."""
         logger.info(message)
         try:
-            # 直接解析收到的消息，不添加 'Received: ' 前缀
+            # 直接解析收到的消息，不添加 'Received: ' 前綴
             json_data = json.loads(message)
 
             self.message_received.emit(f"{json.dumps(json_data, indent=4)}")
@@ -47,7 +47,7 @@ class WebSocketClient(QObject):
             #     # Emit the full JSON formatted message for other types
             #     self.status_update_signal.emit(f"{json.dumps(json_data, indent=4)}")
         except json.JSONDecodeError:
-            # 如果消息不是 JSON 格式，显示原始消息
+            # 如果消息不是 JSON 格式，顯示原始消息
             logger.warning("ws message is not json format")
             self.message_received.emit(message)
             self.status_update_signal.emit("error")
