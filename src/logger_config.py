@@ -8,7 +8,7 @@ def setup_logging():
     log_filename = datetime.now().strftime("DG-LAB-VRCOSC_%Y-%m-%d_%H-%M-%S.log")
 
     # 創建日誌目錄（如果不存在）
-    log_dir = "logs"
+    log_dir = "Z:\Temp\logs"
     os.makedirs(log_dir, exist_ok=True)
 
     # 配置日誌格式
